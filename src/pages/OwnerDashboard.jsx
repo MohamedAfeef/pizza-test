@@ -5,7 +5,7 @@ import OrderManager from '../components/OrderManager';
 const OwnerDashboard = () => {
   return (
     <div>
-      <h1>Owner Dashboard</h1>
+      <h1 className="display-4 text-center my-4">Owner Dashboard</h1>
       <InventoryManager />
       <OrderManager />
     </div>

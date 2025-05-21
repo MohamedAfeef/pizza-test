@@ -6,7 +6,7 @@ import OrderStatusChecker from '../components/OrderStatusChecker';
 const CustomerDashboard = () => {
   return (
     <div>
-      <h1>Customer Dashboard</h1>
+      <h1 className="display-4 text-center my-4">Customer Dashboard</h1>
       <OrderItemList />
       <OrderForm />
       <OrderStatusChecker />

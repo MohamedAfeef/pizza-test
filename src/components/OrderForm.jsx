@@ -13,7 +13,6 @@ const OrderForm = () => {
   };
 
   const canMakePizza = (pizza) => {
-    // Ensure each ingredient count is > 0
     return pizza.ingredients.every((ing) => inventory[ing] > 0);
   };
 
@@ -26,7 +25,6 @@ const OrderForm = () => {
     let canPlace = true;
     const usedIngredients = {};
 
-    // Check inventory and accumulate used ingredients
     for (const pizzaId of selectedPizzas) {
       const pizza = pizzaItems.find((p) => p.id === pizzaId);
       if (!pizza || !canMakePizza(pizza)) {
@@ -43,16 +41,13 @@ const OrderForm = () => {
       return;
     }
 
-    // Deduct ingredients from inventory
     Object.entries(usedIngredients).forEach(([ing, qty]) => {
       updateInventory(ing, -qty);
     });
 
-    // Create new order id
     const id = uuidv4().slice(0, 8);
     setOrderId(id);
 
-    // Add the order to global state
     addOrder({
       id,
       items: selectedPizzas,
@@ -61,43 +56,64 @@ const OrderForm = () => {
     });
 
     alert(`✅ Order placed! Your reference ID is: ${id}`);
-
-    // Clear selections
     setSelectedPizzas([]);
   };
 
   return (
-    <div>
-      <h2>Place an Order</h2>
-      <ul>
+    <div className="container my-4">
+      <h2 className="mb-4 text-center">Place an Order</h2>
+      
+      <div className="row">
         {pizzaItems.map((pizza) => (
-          <li key={pizza.id}>
-            <strong>{pizza.name}</strong> — {canMakePizza(pizza) ? '🟢 Available' : '🔴 Out of stock'}
-            <button
-              onClick={() => handleSelect(pizza.id)}
-              disabled={!canMakePizza(pizza)}
-              style={{ marginLeft: '10px' }}
-            >
-              Add to Order
-            </button>
-          </li>
+          <div key={pizza.id} className="col-12 col-md-6 col-lg-4 mb-3">
+            <div className="card h-100 shadow-sm">
+              <div className="card-body">
+                <h5 className="card-title">{pizza.name}</h5>
+                <p className="card-text">
+                  {canMakePizza(pizza)
+                    ? '🟢 Available'
+                    : '🔴 Out of stock'}
+                </p>
+                <button
+                  onClick={() => handleSelect(pizza.id)}
+                  disabled={!canMakePizza(pizza)}
+                  className="btn btn-outline-primary w-100"
+                >
+                  Add to Order
+                </button>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {selectedPizzas.length > 0 && (
-        <>
+        <div className="mt-4">
           <h4>Selected Pizzas:</h4>
-          <ul>
+          <ul className="list-group mb-3">
             {selectedPizzas.map((id, index) => {
               const pizza = pizzaItems.find((p) => p.id === id);
-              return <li key={index}>{pizza?.name}</li>;
+              return (
+                <li key={index} className="list-group-item">
+                  {pizza?.name}
+                </li>
+              );
             })}
           </ul>
-          <button onClick={handlePlaceOrder}>✅ Place Order</button>
-        </>
+          <button
+            onClick={handlePlaceOrder}
+            className="btn btn-success w-100"
+          >
+            ✅ Place Order
+          </button>
+        </div>
       )}
 
-      {orderId && <p>Your order ID is: <strong>{orderId}</strong></p>}
+      {orderId && (
+        <div className="alert alert-info mt-3 text-center">
+          Your order ID is: <strong>{orderId}</strong>
+        </div>
+      )}
     </div>
   );
 };

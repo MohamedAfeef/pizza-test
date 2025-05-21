@@ -6,7 +6,6 @@ const statusOptions = ['Placed', 'Preparing', 'Dispatched', 'Delivered'];
 const OrderManager = () => {
   const { orders, updateOrderStatus, removeOrder, addOrder } = useContext(AppContext);
 
-  // State for new order form
   const [newOrderItems, setNewOrderItems] = useState('');
   const [newOrderStatus, setNewOrderStatus] = useState(statusOptions[0]);
 
@@ -26,10 +25,7 @@ const OrderManager = () => {
       return;
     }
 
-    // Generate a unique ID for new order (could use UUID or similar in real app)
     const newOrderId = Date.now().toString();
-
-    // Split items by comma and trim spaces
     const itemsArray = newOrderItems.split(',').map(item => item.trim()).filter(Boolean);
 
     const newOrder = {
@@ -40,89 +36,90 @@ const OrderManager = () => {
     };
 
     addOrder(newOrder);
-
-    // Reset form
     setNewOrderItems('');
     setNewOrderStatus(statusOptions[0]);
   };
 
   return (
-    <div>
-      <h2>Manage Orders</h2>
+    <div className="container my-4">
+      <h2 className="text-center mb-4">Manage Orders</h2>
 
       {orders.length === 0 ? (
-        <p>No orders found.</p>
+        <p className="text-center">No orders found.</p>
       ) : (
-        <ul>
+        <div className="row">
           {orders.map((order) => (
-            <li key={order.id} style={{ marginBottom: '15px' }}>
-              <strong>Order ID:</strong> {order.id} <br />
-              <strong>Status:</strong>{' '}
-              <select
-                value={order.status}
-                onChange={(e) => handleStatusChange(order.id, e.target.value)}
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-              <br />
-              <strong>Items:</strong>{' '}
-              <ul>
-                {order.items.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-              <small>Placed At: {new Date(order.createdAt).toLocaleString()}</small>
-              <br />
-              <button
-                onClick={() => handleRemoveOrder(order.id)}
-                style={{ marginTop: '8px', color: 'red' }}
-              >
-                Remove Order
-              </button>
-            </li>
+            <div key={order.id} className="col-12 col-md-6 mb-4">
+              <div className="card shadow-sm h-100">
+                <div className="card-body">
+                  <h5 className="card-title">Order ID: {order.id}</h5>
+                  <div className="mb-2">
+                    <label className="form-label fw-semibold">Status:</label>
+                    <select
+                      className="form-select"
+                      value={order.status}
+                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>{status}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="fw-semibold">Items:</label>
+                    <ul className="list-group list-group-flush">
+                      {order.items.map((item, index) => (
+                        <li key={index} className="list-group-item">{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <p className="text-muted mt-2 mb-3">
+                    <small>Placed At: {new Date(order.createdAt).toLocaleString()}</small>
+                  </p>
+
+                  <button
+                    className="btn btn-outline-danger w-100"
+                    onClick={() => handleRemoveOrder(order.id)}
+                  >
+                    Remove Order
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
 
-      {/* Add new order form */}
-      <h3>Add New Order</h3>
-      <form onSubmit={handleAddOrder} style={{ marginTop: '20px' }}>
-        <div>
-          <label>
-            Items (comma separated):{' '}
-            <input
-              type="text"
-              value={newOrderItems}
-              onChange={(e) => setNewOrderItems(e.target.value)}
-              placeholder="e.g. Burger, Fries, Coke"
-              style={{ width: '300px' }}
-            />
-          </label>
+      {/* Add New Order Form */}
+      <h3 className="mt-5">Add New Order</h3>
+      <form onSubmit={handleAddOrder} className="mt-3">
+        <div className="mb-3">
+          <label className="form-label">Items (comma separated):</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="e.g. Burger, Fries, Coke"
+            value={newOrderItems}
+            onChange={(e) => setNewOrderItems(e.target.value)}
+          />
         </div>
 
-        <div style={{ marginTop: '10px' }}>
-          <label>
-            Status:{' '}
-            <select
-              value={newOrderStatus}
-              onChange={(e) => setNewOrderStatus(e.target.value)}
-            >
-              {statusOptions.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </label>
+        <div className="mb-3">
+          <label className="form-label">Status:</label>
+          <select
+            className="form-select"
+            value={newOrderStatus}
+            onChange={(e) => setNewOrderStatus(e.target.value)}
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
         </div>
 
-        <button type="submit" style={{ marginTop: '10px' }}>
-          Add Order
-        </button>
+        <button type="submit" className="btn btn-primary w-100">Add Order</button>
       </form>
     </div>
   );
